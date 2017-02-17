@@ -1,18 +1,23 @@
 /*
 
+AWS
 http://52.14.115.181/
 
-GET 
-  http://localhost:80/api/wallet/?username=leon&password=password
-POST 
-  http://localhost:80/api/transfer/?username=leon&password=password&coin1=USD&coin2=BTC&amount=500
-
 */
+
+// ========================================================
+// ========================================================
+var username = 'leon'
+var password = 'password'
+// ========================================================
+// ========================================================
 
 
 var request = require('request');
 var cron = require('node-cron');
 
+
+// initial coins. It'll be overwritten once the script starts.
 var pastCoin = presentCoin = 
 [ { coinName: 'BTC', coinValue: 0 },
   { coinName: 'ETH', coinValue: 0 },
@@ -92,7 +97,7 @@ function rateOfChange(coinArr){
 
 	console.log(`Highest Rate By Percent: ${highestRate}`)
 	console.log(`Highest Rate By Name: ${highestCoinName}`)
-	if (highestRate !== 0 && highestRate !== 100 && highestCoinName !== undefined){
+	if (highestRate > 0 && highestRate !== 100 && highestCoinName !== undefined){
 		whereMyMoney(highestCoinName)
 	}
 
@@ -121,17 +126,22 @@ function whereMyMoney(highestCoinName){
 
 	console.log(coinName)
 	console.log(coinValue)
-	spendThatMoney(coinName, coinValue, highestCoinName)
+	spendThatMoney(coinName, highestCoinName, coinValue)
 
 	})
 
 }
 
 
-function spendThatMoney(coinName, coinValue, highestCoinName){
-	
-	console.log('exchange complete')
-}
+function spendThatMoney(coin1, coin2, amount){
+
+	var url = `http://localhost:80/api/transfer/?username=${username}&password=${password}&coin1=${coin1}&coin2=${coin2}&amount=${amount}`
+	console.log(`Posted to url: ${url}`)
+	request.post({url:url}, function (e, r, body) {
+		console.log(`Exchanged ${amount} coins from ${coin1} to ${coin2} `)
+	})
+
+}//spendThatMoney
 
 
 
