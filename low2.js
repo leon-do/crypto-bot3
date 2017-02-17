@@ -12,7 +12,7 @@ var password = 'password'
 // ========================================================
 // ========================================================
 
-
+var fs = require('fs')
 var request = require('request');
 var cron = require('node-cron');
 
@@ -35,6 +35,7 @@ var pastCoin = presentCoin =
 
 
 cron.schedule('*/2 * * * * *', function(){
+	console.log(" ======================================================== ")
 	console.log('firing cron')
 	filterData()
 
@@ -81,11 +82,13 @@ function rateOfChange(coinArr){
 	pastCoin = presentCoin
 	presentCoin = coinArr
 
-	console.log('Past Coin Array')
+	console.log('\n Past Coin Array')
 	console.log(pastCoin)
+	console.log(" ")
 
-	console.log(`Present Coin Array`)
+	console.log(`\n Present Coin Array`)
 	console.log(presentCoin)
+	console.log(" ")
 
 	//loop through and compare
 	for (var i = 0; i < coinArr.length; i++){
@@ -97,8 +100,7 @@ function rateOfChange(coinArr){
 		}
 	}
 
-	console.log(`Lowest Rate By Percent: ${lowestRate}`)
-	console.log(`Lowest Rate By Name: ${lowestCoinName}`)
+	console.log(`\n Highest Rate By Name: ${highestCoinName} \n Highest Rate By Percent: ${highestRate} \n`)
 	if (lowestRate < 0 && lowestRate !== 100 && lowestCoinName !== undefined){
 		whereMyMoney(lowestCoinName)
 	}
@@ -124,10 +126,6 @@ function whereMyMoney(lowestCoinName){
 		}
 	}
 
-
-	console.log(`coin name is ${coinName}`)
-	console.log(`coin value is ${coinValue}`)
-	console.log(`lowestCoinName is ${lowestCoinName}`)
 	spendThatMoney(coinName, lowestCoinName, coinValue)
 
 	})
@@ -136,6 +134,8 @@ function whereMyMoney(lowestCoinName){
 
 
 function spendThatMoney(coin1, coin2, amount){
+
+	console.log(`\n coin1 is ${coin1} \n coin2 is ${coin2} \n amount is ${amount} \n`)
 
 	var url = `http://localhost:80/api/transfer/?username=${username}&password=${password}&coin1=${coin1}&coin2=${coin2}&amount=${amount}`
 	
@@ -148,6 +148,9 @@ function spendThatMoney(coin1, coin2, amount){
 			var data = JSON.parse(data)
 			console.log("current balance")
 			console.log(data)
+			fs.readFile('magic.txt', 'utf8', function(error,data){
+   				console.log(data)
+			})
 		})
 	);
 
