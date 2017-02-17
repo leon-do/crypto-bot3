@@ -7,12 +7,12 @@ http://52.14.115.181/
 
 // ========================================================
 // ========================================================
-var username = 'leon'
+var username = 'high1'
 var password = 'password'
 // ========================================================
 // ========================================================
 
-
+var fs = require('fs')
 var request = require('request');
 var cron = require('node-cron');
 
@@ -34,7 +34,8 @@ var pastCoin = presentCoin =
 
 
 
-cron.schedule('*/1 * * * * *', function(){
+cron.schedule('*/2 * * * * *', function(){
+	console.log(" ======================================================== ")
 	console.log('firing cron')
 	filterData()
 
@@ -81,11 +82,13 @@ function rateOfChange(coinArr){
 	pastCoin = presentCoin
 	presentCoin = coinArr
 
-	console.log('Past Coin Array')
+	console.log('\n Past Coin Array')
 	console.log(pastCoin)
+	console.log(" ")
 
-	console.log(`Present Coin Array`)
+	console.log(`\n Present Coin Array`)
 	console.log(presentCoin)
+	console.log(" ")
 
 	//loop through and compare
 	for (var i = 0; i < coinArr.length; i++){
@@ -97,8 +100,8 @@ function rateOfChange(coinArr){
 		}
 	}
 
-	console.log(`Highest Rate By Percent: ${highestRate}`)
-	console.log(`Highest Rate By Name: ${highestCoinName}`)
+	console.log(`\n Highest Rate By Name: ${highestCoinName} \n Highest Rate By Percent: ${highestRate} \n`)
+
 	if (highestRate > 0 && highestRate !== 100 && highestCoinName !== undefined){
 		whereMyMoney(highestCoinName)
 	}
@@ -125,9 +128,6 @@ function whereMyMoney(highestCoinName){
 		}
 	}
 
-
-	console.log(coinName)
-	console.log(coinValue)
 	spendThatMoney(coinName, highestCoinName, coinValue)
 
 	})
@@ -137,11 +137,24 @@ function whereMyMoney(highestCoinName){
 
 function spendThatMoney(coin1, coin2, amount){
 
+	console.log(`\n coin1 is ${coin1} \n coin2 is ${coin2} \n amount is ${amount} \n`)
+
 	var url = `http://localhost:80/api/transfer/?username=${username}&password=${password}&coin1=${coin1}&coin2=${coin2}&amount=${amount}`
+	
 	console.log(`Posted to url: ${url}`)
+	
 	request.post({url:url}, function (e, r, body) {
 		console.log(`Exchanged ${amount} coins from ${coin1} to ${coin2} `)
-	})
+	}, 	
+		request.get('http://localhost:80/api/wallet/?username=leon&password=password', function(err, res, data){
+			var data = JSON.parse(data)
+			console.log("current balance")
+			console.log(data)
+			fs.readFile('magic.txt', 'utf8', function(error,data){
+   				console.log(data)
+			})
+		})
+	);
 
 }//spendThatMoney
 
