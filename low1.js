@@ -7,7 +7,7 @@ http://52.14.115.181/
 
 // ========================================================
 // ========================================================
-var username = 'leon'
+var username = 'low1'
 var password = 'password'
 // ========================================================
 // ========================================================
@@ -34,7 +34,7 @@ var pastCoin = presentCoin =
 
 
 
-cron.schedule('*/1 * * * * *', function(){
+cron.schedule('*/2 * * * * *', function(){
 	console.log('firing cron')
 	filterData()
 
@@ -74,8 +74,8 @@ function filterData(){
 
 // see if there's a change 1 second ago
 function rateOfChange(coinArr){
-	var highestRate = 0;
-	var highestCoinName;
+	var lowestRate = 0;
+	var lowestCoinName;
 
 	//update coins
 	pastCoin = presentCoin
@@ -91,16 +91,16 @@ function rateOfChange(coinArr){
 	for (var i = 0; i < coinArr.length; i++){
 		var rate = (parseFloat(presentCoin[i].coinValue) - parseFloat(pastCoin[i].coinValue)) / parseFloat(presentCoin[i].coinValue) * 100;
 		console.log(`Rate for ${presentCoin[i].coinName} is ${rate}`)
-		if (rate > highestRate){
-			highestRate = rate;
-			highestCoinName = presentCoin[i].coinName
+		if (rate < lowestRate){
+			lowestRate = rate;
+			lowestCoinName = presentCoin[i].coinName
 		}
 	}
 
-	console.log(`Highest Rate By Percent: ${highestRate}`)
-	console.log(`Highest Rate By Name: ${highestCoinName}`)
-	if (highestRate > 0 && highestRate !== 100 && highestCoinName !== undefined){
-		whereMyMoney(highestCoinName)
+	console.log(`Lowest Rate By Percent: ${lowestRate}`)
+	console.log(`Lowest Rate By Name: ${lowestCoinName}`)
+	if (lowestRate < 0 && lowestRate !== 100 && lowestCoinName !== undefined){
+		whereMyMoney(lowestCoinName)
 	}
 
 } //rateofChange
@@ -112,11 +112,10 @@ function rateOfChange(coinArr){
 
 
 // function finds where my money is at (which coin)
-function whereMyMoney(highestCoinName){
+function whereMyMoney(lowestCoinName){
 	request
 	.get('http://localhost:80/api/wallet/?username=leon&password=password', function(err, res, data){
 	var data = JSON.parse(data)
-
 
 	for (var i = 0; i < data.wallet.values.length; i++){
 		if (data.wallet.values[i] !== 0){
@@ -126,9 +125,10 @@ function whereMyMoney(highestCoinName){
 	}
 
 
-	console.log(coinName)
-	console.log(coinValue)
-	spendThatMoney(coinName, highestCoinName, coinValue)
+	console.log(`coin name is ${coinName}`)
+	console.log(`coin value is ${coinValue}`)
+	console.log(`lowestCoinName is ${lowestCoinName}`)
+	spendThatMoney(coinName, lowestCoinName, coinValue)
 
 	})
 
@@ -138,10 +138,18 @@ function whereMyMoney(highestCoinName){
 function spendThatMoney(coin1, coin2, amount){
 
 	var url = `http://localhost:80/api/transfer/?username=${username}&password=${password}&coin1=${coin1}&coin2=${coin2}&amount=${amount}`
+	
 	console.log(`Posted to url: ${url}`)
+	
 	request.post({url:url}, function (e, r, body) {
 		console.log(`Exchanged ${amount} coins from ${coin1} to ${coin2} `)
-	})
+	}, 	
+		request.get('http://localhost:80/api/wallet/?username=leon&password=password', function(err, res, data){
+			var data = JSON.parse(data)
+			console.log("current balance")
+			console.log(data)
+		})
+	);
 
 }//spendThatMoney
 
