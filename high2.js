@@ -34,7 +34,7 @@ var pastCoin = presentCoin =
 
 
 
-cron.schedule('*/1 * * * * *', function(){
+cron.schedule('*/2 * * * * *', function(){
 	console.log('firing cron')
 	filterData()
 
