@@ -43,7 +43,7 @@ cron.schedule('*/5 * * * * *', function(){
 
 
 
-
+// select relevant info
 function filterData(){
 	request.get('http://www.coincap.io/front', function(err, res, data){
 
@@ -72,10 +72,12 @@ function filterData(){
 
 
 
-
+// see if there's a change 1 second ago
 function rateOfChange(coinArr){
 	var highestRate = 0;
 	var highestCoinName;
+
+	//update coins
 	pastCoin = presentCoin
 	presentCoin = coinArr
 
