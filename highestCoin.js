@@ -1,6 +1,6 @@
 /*
 
-This bot is selecting the HIGHEST rate of change (negative) and transfering 100% of the coins to that
+This bot is selecting the HIGHEST rate of change (positive) and transfering 100% of the coins to that
 
 http://52.14.115.181/
 
