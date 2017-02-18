@@ -1,6 +1,7 @@
 /*
 
-AWS
+This bot is selecting the HIGHEST rate of change (negative) and transfering 100% of the coins to that
+
 http://52.14.115.181/
 
 */
@@ -117,8 +118,8 @@ function rateOfChange(coinArr){
 // function finds where my money is at (which coin)
 function whereMyMoney(highestCoinName){
 	request
-	.get(`http://localhost:80/api/wallet/?username=${username}&password=${password}`, function(err, res, data){
-		console.log(`http://localhost:80/api/wallet/?username=${username}&password=${password}`)
+	.get(`http://52.14.115.181/api/wallet/?username=${username}&password=${password}`, function(err, res, data){
+		console.log(`http://52.14.115.181/api/wallet/?username=${username}&password=${password}`)
 		
 		var data = JSON.parse(data)
 		console.log(data)
@@ -129,11 +130,11 @@ function whereMyMoney(highestCoinName){
 		          coinValue = data.wallet[key]
 		     }
 		}
-
+	
 	if (coinName !== highestCoinName){
 		spendThatMoney(coinName, highestCoinName, coinValue)
 	}
-
+	
 	})
 
 }
@@ -143,7 +144,7 @@ function spendThatMoney(coin1, coin2, amount){
 
 	console.log(`\n coin1 is ${coin1} \n coin2 is ${coin2} \n amount is ${amount} \n`)
 
-	var url = `http://localhost:80/api/transfer/?username=${username}&password=${password}&coin1=${coin1}&coin2=${coin2}&amount=${amount}`
+	var url = `http://52.14.115.181/api/transfer/?username=${username}&password=${password}&coin1=${coin1}&coin2=${coin2}&amount=${amount}`
 	
 	console.log(`Posted to url: ${url}`)
 	
@@ -151,7 +152,7 @@ function spendThatMoney(coin1, coin2, amount){
 		console.log(e)
 		console.log(`Exchanged ${amount} coins from ${coin1} to ${coin2} `) 	
 		
-		request.get(`http://localhost:80/api/wallet/?username=${username}&password=${password}`, function(err, res, data){
+		request.get(`http://52.14.115.181/api/wallet/?username=${username}&password=${password}`, function(err, res, data){
 			var data = JSON.parse(data)
 			console.log("current balance")
 			console.log(data)
